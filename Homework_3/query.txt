@@ -1,0 +1,35 @@
+SELECT EXTRACT(MONTH FROM lpep_pickup_datetime) AS month , count(VendorID)
+FROM `directed-bongo-411510.green_nyc_taxi_2022_vanilla.green_nyc_taxi_2022_table` 
+group by month
+limit 100
+
+SELECT COUNT(DISTINCT PULocationID)
+FROM `directed-bongo-411510.green_nyc_taxi_2022_vanilla.green_nyc_taxi_2022_table` 
+
+
+CREATE MATERIALIZED VIEW `directed-bongo-411510.green_nyc_taxi_2022_vanilla.green_nyc_taxi_2022_table_materialised_view`
+AS
+SELECT COUNT(DISTINCT PULocationID)
+FROM `directed-bongo-411510.green_nyc_taxi_2022_vanilla.green_nyc_taxi_2022_table` 
+
+CREATE MATERIALIZED VIEW `directed-bongo-411510.nyc_green_taxi_2022_native.nyc_green_taxi_2022_native_table_materialised_view`
+AS
+SELECT COUNT(DISTINCT PULocationID) as count_distc_PULocationID
+FROM `directed-bongo-411510.nyc_green_taxi_2022_native.nyc_green_taxi_2022_native_table` 
+
+
+
+CREATE TABLE `directed-bongo-411510.green_nyc_taxi_2022_vanilla.green_nyc_taxi_2022_table_partitioned_clustered`
+PARTITION BY DATE(lpep_pickup_datetime)
+CLUSTER BY PULocationID AS
+SELECT *
+FROM `directed-bongo-411510.green_nyc_taxi_2022_vanilla.green_nyc_taxi_2022_table`;
+
+
+select distinct(PULocationID)
+from `directed-bongo-411510.green_nyc_taxi_2022_vanilla.green_nyc_taxi_2022_table`
+where lpep_pickup_datetime BETWEEN PARSE_TIMESTAMP('%m/%d/%Y', '06/01/2022') AND PARSE_TIMESTAMP('%m/%d/%Y', '06/30/2022')
+
+select distinct(PULocationID)
+from `directed-bongo-411510.nyc_green_taxi_2022_native.nyc_green_taxi_2022_materialised`
+where lpep_pickup_datetime BETWEEN PARSE_TIMESTAMP('%m/%d/%Y', '06/01/2022') AND PARSE_TIMESTAMP('%m/%d/%Y', '06/30/2022')
